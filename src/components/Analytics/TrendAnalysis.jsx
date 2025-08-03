@@ -3,7 +3,7 @@ import { TrendingUp, TrendingDown, BarChart3, Calendar, Target, AlertCircle } fr
 import LineChart from '../Charts/LineChart';
 import BarChartComponent from '../Charts/BarChart';
 import { useChartData } from '../../hooks/useChartData';
-import { LoadingOverlay } from '../UI/LoadingSpinner';
+import LoadingSpinner, { LoadingOverlay } from '../UI/LoadingSpinner';
 import { ErrorDisplay } from '../UI/ErrorBoundary';
 
 /**

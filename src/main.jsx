@@ -17,8 +17,17 @@ const removeInitialLoader = () => {
 const measurePerformance = () => {
   if (typeof window !== 'undefined' && window.performance && import.meta.env.DEV) {
     window.addEventListener('load', () => {
-      const loadTime = window.performance.timing.loadEventEnd - window.performance.timing.navigationStart;
-      console.log(`Page load time: ${loadTime}ms`);
+      const navigation = window.performance.getEntriesByType('navigation')[0];
+      if (navigation) {
+        const loadTime = navigation.loadEventEnd - navigation.fetchStart;
+        console.log(`Page load time: ${Math.round(loadTime)}ms`);
+      } else {
+        // Fallback for older browsers
+        const loadTime = window.performance.timing.loadEventEnd - window.performance.timing.navigationStart;
+        if (loadTime > 0) {
+          console.log(`Page load time: ${Math.round(loadTime)}ms`);
+        }
+      }
     });
   }
 };

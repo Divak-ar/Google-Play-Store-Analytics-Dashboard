@@ -40,19 +40,12 @@ export const useAnalytics = (apps = [], reviews = []) => {
     if (!filteredApps.length) return null;
     
     try {
-      setState(prev => ({ ...prev, isGenerating: true, error: null }));
-      
       const analytics = generateAnalytics(filteredApps, reviews);
       const chartData = generateChartData(filteredApps);
       
       return { analytics, chartData };
     } catch (error) {
       console.error('Error generating analytics:', error);
-      setState(prev => ({ 
-        ...prev, 
-        isGenerating: false, 
-        error: error.message 
-      }));
       return null;
     }
   }, [filteredApps, reviews]);
@@ -61,6 +54,20 @@ export const useAnalytics = (apps = [], reviews = []) => {
    * Updates analytics when data changes
    */
   useEffect(() => {
+    if (!filteredApps.length) {
+      setState(prev => ({
+        ...prev,
+        analytics: null,
+        chartData: null,
+        filteredApps: [],
+        isGenerating: false,
+        error: null
+      }));
+      return;
+    }
+
+    setState(prev => ({ ...prev, isGenerating: true, error: null }));
+    
     if (generateCurrentAnalytics) {
       setState(prev => ({
         ...prev,
@@ -69,6 +76,12 @@ export const useAnalytics = (apps = [], reviews = []) => {
         filteredApps,
         isGenerating: false,
         error: null
+      }));
+    } else {
+      setState(prev => ({
+        ...prev,
+        isGenerating: false,
+        error: 'Failed to generate analytics'
       }));
     }
   }, [generateCurrentAnalytics, filteredApps]);

@@ -3,7 +3,7 @@ import { Star, TrendingUp, Award, AlertTriangle } from 'lucide-react';
 import BarChartComponent from '../Charts/BarChart';
 import ScatterPlot from '../Charts/ScatterPlot';
 import { useChartData } from '../../hooks/useChartData';
-import { LoadingOverlay } from '../UI/LoadingSpinner';
+import LoadingSpinner, { LoadingOverlay } from '../UI/LoadingSpinner';
 import { ErrorDisplay } from '../UI/ErrorBoundary';
 
 /**
@@ -22,10 +22,21 @@ const RatingAnalysis = ({
 }) => {
   const [selectedView, setSelectedView] = useState('distribution');
   
-  const chartData = useChartData(analytics, analytics?.chartData);
+  const chartData = useChartData(analytics);
 
   if (error) {
     return <ErrorDisplay error={error} title="Rating Analysis Error" />;
+  }
+
+  // Show loading only if explicitly loading AND we have no data at all
+  if (isLoading && !analytics?.ratings) {
+    return (
+      <div className="p-6">
+        <div className="text-center py-12">
+          <LoadingSpinner message="Analyzing ratings..." type="chart" />
+        </div>
+      </div>
+    );
   }
 
   if (!analytics?.ratings) {
@@ -62,7 +73,7 @@ const RatingAnalysis = ({
 
   return (
     <div className="space-y-6 relative">
-      <LoadingOverlay isVisible={isLoading} message="Analyzing ratings..." />
+      {/* Remove LoadingOverlay - only show during initial load */}
       
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">

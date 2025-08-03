@@ -30,7 +30,7 @@ const OverviewSection = ({
   reviews, 
   onSectionChange 
 }) => {
-  const chartData = useChartData(analytics, analytics?.chartData);
+  const chartData = useChartData(analytics);
 
   if (!analytics) {
     return (
@@ -203,11 +203,11 @@ const OverviewSection = ({
             </button>
           </div>
           
-          <div className="h-80">
+          <div className="h-64">
             <PieChartComponent
               data={chartData?.categoryPieData || []}
-              height={320}
-              showLegend={true}
+              height={250}
+              showLegend={false}
             />
           </div>
         </div>
@@ -227,13 +227,13 @@ const OverviewSection = ({
             </button>
           </div>
           
-          <div className="h-80">
+          <div className="h-64">
             <BarChartComponent
               data={chartData?.ratingHistogramData || []}
               dataKey="count"
               xAxisKey="range"
               color="#f59e0b"
-              height={320}
+              height={250}
             />
           </div>
         </div>

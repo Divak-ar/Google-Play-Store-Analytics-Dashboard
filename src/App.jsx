@@ -1,23 +1,33 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useMemo, useCallback, Suspense } from 'react';
+import ErrorBoundary from './components/UI/ErrorBoundary';
+import LoadingSpinner from './components/UI/LoadingSpinner';
 import Header from './components/UI/Header';
 import Sidebar from './components/UI/Sidebar';
 import Dashboard from './components/Dashboard/Dashboard';
 import { useDataLoader } from './hooks/useDataLoader';
 import { useAnalytics } from './hooks/useAnalytics';
 import { DASHBOARD_SECTIONS } from './utils/constants';
-import LoadingSpinner from './components/UI/LoadingSpinner';
-import { ErrorDisplay } from './components/UI/ErrorBoundary';
+import { AppProvider, useAppContext } from './context/AppContext';
 import './App.css';
 
 /**
- * Main Application Component
- * Orchestrates the entire Google Play Store Analytics dashboard
+ * Main Application Component (Inner)
+ * Uses context for state management
  */
-function App() {
-  // State management
-  const [activeSection, setActiveSection] = useState(DASHBOARD_SECTIONS.OVERVIEW);
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  const [filters, setFilters] = useState({});
+function AppInner() {
+  // Get state and actions from context
+  const {
+    activeSection,
+    isMobileSidebarOpen,
+    filters,
+    selectedCategory,
+    setActiveSection,
+    toggleMobileSidebar,
+    setMobileSidebar,
+    updateFilters: updateContextFilters,
+    resetFilters: resetContextFilters,
+    setSelectedCategory
+  } = useAppContext();
 
   // Data loading hook
   const {
@@ -68,21 +78,20 @@ function App() {
   // Event handlers
   const handleSectionChange = useCallback((section) => {
     setActiveSection(section);
-    setIsMobileSidebarOpen(false);
-  }, []);
+  }, [setActiveSection]);
 
   const handleMobileSidebarToggle = useCallback(() => {
-    setIsMobileSidebarOpen(prev => !prev);
-  }, []);
+    toggleMobileSidebar();
+  }, [toggleMobileSidebar]);
 
   const handleMobileSidebarClose = useCallback(() => {
-    setIsMobileSidebarOpen(false);
-  }, []);
+    setMobileSidebar(false);
+  }, [setMobileSidebar]);
 
   const handleFiltersChange = useCallback((newFilters) => {
-    setFilters(prev => ({ ...prev, ...newFilters }));
+    updateContextFilters(newFilters);
     updateFilters(newFilters);
-  }, [updateFilters]);
+  }, [updateContextFilters, updateFilters]);
 
   const handleRefresh = useCallback(async () => {
     try {
@@ -234,6 +243,17 @@ function App() {
         </div>
       )}
     </div>
+  );
+}
+
+/**
+ * Main App Component with Context Provider
+ */
+function App() {
+  return (
+    <AppProvider>
+      <AppInner />
+    </AppProvider>
   );
 }
 

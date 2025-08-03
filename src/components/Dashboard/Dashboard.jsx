@@ -63,7 +63,8 @@ const Dashboard = ({
       apps,
       reviews,
       filters,
-      onFiltersChange
+      onFiltersChange,
+      isLoading: !analytics // If no analytics, then we're still loading
     };
 
     switch (activeSection) {

@@ -13,20 +13,28 @@ import {
   Check
 } from 'lucide-react';
 import { DASHBOARD_SECTIONS } from '../../utils/constants';
+import { useAppContext } from '../../context/AppContext';
 
 /**
- * Enhanced Sidebar with always-visible filters
+ * Enhanced Sidebar with always-visible filters and context state
  */
 const Sidebar = ({ 
-  activeSection = DASHBOARD_SECTIONS.OVERVIEW,
-  onSectionChange,
-  filters = {},
-  onFiltersChange,
   categories = [],
   isMobileOpen = false,
   onMobileClose
 }) => {
   const [searchCategory, setSearchCategory] = useState('');
+  
+  // Use context for state management
+  const {
+    activeSection,
+    filters,
+    selectedCategory,
+    setActiveSection,
+    updateFilters,
+    resetFilters: resetContextFilters,
+    setSelectedCategory
+  } = useAppContext();
 
   const navigationItems = [
     { 
@@ -122,12 +130,12 @@ const Sidebar = ({
       }
     }
     
-    onFiltersChange(newFilters);
+    updateFilters(newFilters);
   };
 
   // Reset all filters
   const resetFilters = () => {
-    onFiltersChange({});
+    resetContextFilters();
     setSearchCategory('');
   };
 
@@ -180,7 +188,7 @@ const Sidebar = ({
               <button
                 key={item.id}
                 onClick={() => {
-                  onSectionChange(item.id);
+                  setActiveSection(item.id);
                   onMobileClose();
                 }}
                 className={`

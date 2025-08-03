@@ -12,7 +12,7 @@ import {
   CheckCircle,
   AlertCircle
 } from 'lucide-react';
-import { LoadingOverlay } from '../UI/LoadingSpinner';
+import LoadingSpinner, { LoadingOverlay } from '../UI/LoadingSpinner';
 import { ErrorDisplay } from '../UI/ErrorBoundary';
 
 /**

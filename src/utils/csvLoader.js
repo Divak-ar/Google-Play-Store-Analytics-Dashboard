@@ -20,18 +20,24 @@ export const loadCSV = async (filepath, options = {}) => {
     const defaultOptions = {
       header: true,
       dynamicTyping: true,
-      skipEmptyLines: true,
-      delimitersToGuess: [',', '\t', '|', ';'],
+      skipEmptyLines: 'greedy',
+      delimitersToGuess: [',', '	', '|', ';'],
+      newline: '',
+      quoteChar: '"',
+      escapeChar: '"',
       transformHeader: (header) => header.trim(),
       transform: (value) => {
         if (typeof value === 'string') {
           value = value.trim();
-          // Handle empty strings and NaN values
-          if (value === '' || value === 'NaN' || value === 'nan') {
+          // Convert various null representations to null
+          if (value === '' || value === 'nan' || value === 'NaN' || value === 'null') {
             return null;
           }
         }
         return value;
+      },
+      error: (error, file) => {
+        console.warn('CSV parsing error:', error);
       },
       ...options
     };
