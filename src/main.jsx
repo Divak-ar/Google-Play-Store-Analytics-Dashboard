@@ -15,7 +15,7 @@ const removeInitialLoader = () => {
 
 // Performance monitoring
 const measurePerformance = () => {
-  if (typeof window !== 'undefined' && window.performance) {
+  if (typeof window !== 'undefined' && window.performance && import.meta.env.DEV) {
     window.addEventListener('load', () => {
       const loadTime = window.performance.timing.loadEventEnd - window.performance.timing.navigationStart;
       console.log(`Page load time: ${loadTime}ms`);

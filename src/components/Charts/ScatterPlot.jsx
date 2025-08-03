@@ -1,9 +1,17 @@
-import React from 'react';
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { ChartSkeleton } from '../UI/LoadingSpinner';
-import { ErrorDisplay } from '../UI/ErrorBoundary';
-import { ErrorDisplay } from '../UI/ErrorBoundary';
-import { CHART_COLORS } from '../../utils/constants';
+import React from "react";
+import {
+  ScatterChart,
+  Scatter,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
+import { ChartSkeleton } from "../UI/LoadingSpinner";
+import { ErrorDisplay } from "../UI/ErrorBoundary";
+import { CHART_COLORS } from "../../utils/constants";
 
 /**
  * Reusable Scatter Plot component
@@ -26,8 +34,8 @@ import { CHART_COLORS } from '../../utils/constants';
  */
 const ScatterPlot = ({
   data = [],
-  xKey = 'x',
-  yKey = 'y',
+  xKey = "x",
+  yKey = "y",
   sizeKey,
   categoryKey,
   title,
@@ -39,13 +47,15 @@ const ScatterPlot = ({
   error = null,
   formatTooltip,
   showTrendLine = false,
-  margin = { top: 20, right: 30, left: 20, bottom: 20 }
+  margin = { top: 20, right: 30, left: 20, bottom: 20 },
 }) => {
   // Loading state
   if (isLoading) {
     return (
       <div className="w-full">
-        {title && <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>}
+        {title && (
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>
+        )}
         <ChartSkeleton height={`h-[${height}px]`} />
       </div>
     );
@@ -55,7 +65,9 @@ const ScatterPlot = ({
   if (error) {
     return (
       <div className="w-full">
-        {title && <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>}
+        {title && (
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>
+        )}
         <ErrorDisplay error={error} title="Chart Error" />
       </div>
     );
@@ -65,8 +77,12 @@ const ScatterPlot = ({
   if (!data || data.length === 0) {
     return (
       <div className="w-full">
-        {title && <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>}
-        <div className={`h-[${height}px] flex items-center justify-center bg-gray-50 rounded-lg border-2 border-dashed border-gray-300`}>
+        {title && (
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>
+        )}
+        <div
+          className={`h-[${height}px] flex items-center justify-center bg-gray-50 rounded-lg border-2 border-dashed border-gray-300`}
+        >
           <p className="text-gray-500">No data available</p>
         </div>
       </div>
@@ -79,7 +95,7 @@ const ScatterPlot = ({
       ...item,
       x: item[xKey],
       y: item[yKey],
-      originalIndex: index
+      originalIndex: index,
     };
 
     // Add size if sizeKey is provided
@@ -89,7 +105,9 @@ const ScatterPlot = ({
 
     // Add category color if categoryKey is provided
     if (categoryKey && item[categoryKey]) {
-      const categoryIndex = [...new Set(data.map(d => d[categoryKey]))].indexOf(item[categoryKey]);
+      const categoryIndex = [
+        ...new Set(data.map((d) => d[categoryKey])),
+      ].indexOf(item[categoryKey]);
       point.fill = colors[categoryIndex % colors.length];
     } else {
       point.fill = colors[0];
@@ -99,20 +117,23 @@ const ScatterPlot = ({
   });
 
   // Group data by category if categoryKey is provided
-  const groupedData = categoryKey 
-    ? [...new Set(data.map(d => d[categoryKey]))].map(category => ({
+  const groupedData = categoryKey
+    ? [...new Set(data.map((d) => d[categoryKey]))].map((category) => ({
         category,
-        data: processedData.filter(d => d[categoryKey] === category),
-        fill: colors[[...new Set(data.map(d => d[categoryKey]))].indexOf(category) % colors.length]
+        data: processedData.filter((d) => d[categoryKey] === category),
+        fill: colors[
+          [...new Set(data.map((d) => d[categoryKey]))].indexOf(category) %
+            colors.length
+        ],
       }))
-    : [{ category: 'Data', data: processedData, fill: colors[0] }];
+    : [{ category: "Data", data: processedData, fill: colors[0] }];
 
   // Custom tooltip
   const customTooltip = ({ active, payload }) => {
     if (!active || !payload || !payload.length) return null;
 
     const data = payload[0].payload;
-    
+
     if (formatTooltip) {
       return formatTooltip(data);
     }
@@ -123,8 +144,8 @@ const ScatterPlot = ({
           <div className="text-sm font-medium text-gray-900">
             {categoryKey && data[categoryKey] && (
               <div className="flex items-center space-x-2 mb-2">
-                <div 
-                  className="w-3 h-3 rounded-full" 
+                <div
+                  className="w-3 h-3 rounded-full"
                   style={{ backgroundColor: data.fill }}
                 />
                 <span>{data[categoryKey]}</span>
@@ -132,14 +153,17 @@ const ScatterPlot = ({
             )}
           </div>
           <div className="text-sm text-gray-600">
-            <span className="font-medium">{xLabel || xKey}:</span> {data.x?.toLocaleString?.() || data.x}
+            <span className="font-medium">{xLabel || xKey}:</span>{" "}
+            {data.x?.toLocaleString?.() || data.x}
           </div>
           <div className="text-sm text-gray-600">
-            <span className="font-medium">{yLabel || yKey}:</span> {data.y?.toLocaleString?.() || data.y}
+            <span className="font-medium">{yLabel || yKey}:</span>{" "}
+            {data.y?.toLocaleString?.() || data.y}
           </div>
           {sizeKey && data[sizeKey] && (
             <div className="text-sm text-gray-600">
-              <span className="font-medium">{sizeKey}:</span> {data[sizeKey]?.toLocaleString?.() || data[sizeKey]}
+              <span className="font-medium">{sizeKey}:</span>{" "}
+              {data[sizeKey]?.toLocaleString?.() || data[sizeKey]}
             </div>
           )}
         </div>
@@ -149,8 +173,8 @@ const ScatterPlot = ({
 
   // Format axis labels
   const formatNumber = (value) => {
-    if (typeof value !== 'number') return value;
-    
+    if (typeof value !== "number") return value;
+
     if (value >= 1000000) {
       return `${(value / 1000000).toFixed(1)}M`;
     } else if (value >= 1000) {
@@ -163,9 +187,12 @@ const ScatterPlot = ({
   const calculateTrendLine = () => {
     if (!showTrendLine || processedData.length < 2) return null;
 
-    const validPoints = processedData.filter(d => 
-      typeof d.x === 'number' && typeof d.y === 'number' && 
-      !isNaN(d.x) && !isNaN(d.y)
+    const validPoints = processedData.filter(
+      (d) =>
+        typeof d.x === "number" &&
+        typeof d.y === "number" &&
+        !isNaN(d.x) &&
+        !isNaN(d.y)
     );
 
     if (validPoints.length < 2) return null;
@@ -173,18 +200,18 @@ const ScatterPlot = ({
     const n = validPoints.length;
     const sumX = validPoints.reduce((sum, d) => sum + d.x, 0);
     const sumY = validPoints.reduce((sum, d) => sum + d.y, 0);
-    const sumXY = validPoints.reduce((sum, d) => sum + (d.x * d.y), 0);
-    const sumXX = validPoints.reduce((sum, d) => sum + (d.x * d.x), 0);
+    const sumXY = validPoints.reduce((sum, d) => sum + d.x * d.y, 0);
+    const sumXX = validPoints.reduce((sum, d) => sum + d.x * d.x, 0);
 
     const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
     const intercept = (sumY - slope * sumX) / n;
 
-    const minX = Math.min(...validPoints.map(d => d.x));
-    const maxX = Math.max(...validPoints.map(d => d.x));
+    const minX = Math.min(...validPoints.map((d) => d.x));
+    const maxX = Math.max(...validPoints.map((d) => d.x));
 
     return [
       { x: minX, y: slope * minX + intercept },
-      { x: maxX, y: slope * maxX + intercept }
+      { x: maxX, y: slope * maxX + intercept },
     ];
   };
 
@@ -195,34 +222,42 @@ const ScatterPlot = ({
       {title && (
         <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>
       )}
-      
+
       <div className="bg-white p-4 rounded-lg border border-gray-200">
         <ResponsiveContainer width="100%" height={height}>
           <ScatterChart margin={margin}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
-            
-            <XAxis 
+
+            <XAxis
               type="number"
               dataKey="x"
               name={xLabel || xKey}
-              tick={{ fontSize: 12, fill: '#6b7280' }}
+              tick={{ fontSize: 12, fill: "#6b7280" }}
               tickFormatter={formatNumber}
-              label={{ value: xLabel || xKey, position: 'insideBottom', offset: -10 }}
+              label={{
+                value: xLabel || xKey,
+                position: "insideBottom",
+                offset: -10,
+              }}
             />
-            
-            <YAxis 
+
+            <YAxis
               type="number"
               dataKey="y"
               name={yLabel || yKey}
-              tick={{ fontSize: 12, fill: '#6b7280' }}
+              tick={{ fontSize: 12, fill: "#6b7280" }}
               tickFormatter={formatNumber}
-              label={{ value: yLabel || yKey, angle: -90, position: 'insideLeft' }}
+              label={{
+                value: yLabel || yKey,
+                angle: -90,
+                position: "insideLeft",
+              }}
             />
-            
+
             <Tooltip content={customTooltip} />
-            
+
             {categoryKey && <Legend />}
-            
+
             {groupedData.map((group, index) => (
               <Scatter
                 key={group.category}
@@ -231,12 +266,12 @@ const ScatterPlot = ({
                 fill={group.fill}
               />
             ))}
-            
+
             {/* Trend line */}
             {trendLineData && (
               <Scatter
                 data={trendLineData}
-                line={{ stroke: '#ef4444', strokeWidth: 2 }}
+                line={{ stroke: "#ef4444", strokeWidth: 2 }}
                 shape={() => null}
                 legendType="none"
               />
@@ -262,13 +297,13 @@ const ScatterPlot = ({
           )}
           <div>
             <div className="text-lg font-semibold text-gray-900">
-              {formatNumber(Math.max(...processedData.map(d => d.x)))}
+              {formatNumber(Math.max(...processedData.map((d) => d.x)))}
             </div>
             <div className="text-sm text-gray-500">Max {xLabel || xKey}</div>
           </div>
           <div>
             <div className="text-lg font-semibold text-gray-900">
-              {formatNumber(Math.max(...processedData.map(d => d.y)))}
+              {formatNumber(Math.max(...processedData.map((d) => d.y)))}
             </div>
             <div className="text-sm text-gray-500">Max {yLabel || yKey}</div>
           </div>
@@ -282,12 +317,7 @@ const ScatterPlot = ({
  * Bubble Chart variant with size dimension
  */
 export const BubbleChart = (props) => {
-  return (
-    <ScatterPlot
-      {...props}
-      sizeKey={props.sizeKey || 'size'}
-    />
-  );
+  return <ScatterPlot {...props} sizeKey={props.sizeKey || "size"} />;
 };
 
 /**
@@ -295,10 +325,10 @@ export const BubbleChart = (props) => {
  */
 export const CorrelationPlot = ({
   data = [],
-  xKey = 'x',
-  yKey = 'y',
+  xKey = "x",
+  yKey = "y",
   title,
-  height = 300
+  height = 300,
 }) => {
   return (
     <ScatterPlot
@@ -308,7 +338,7 @@ export const CorrelationPlot = ({
       title={title}
       height={height}
       showTrendLine={true}
-      colors={['#3b82f6']}
+      colors={["#3b82f6"]}
     />
   );
 };

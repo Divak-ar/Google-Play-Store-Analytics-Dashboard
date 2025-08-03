@@ -12,7 +12,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
-          charts: ['recharts', 'd3'],
+          charts: ['recharts'],
           utils: ['lodash', 'papaparse', 'mathjs']
         }
       }
