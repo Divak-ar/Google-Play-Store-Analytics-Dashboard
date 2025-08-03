@@ -22,6 +22,17 @@ export const loadCSV = async (filepath, options = {}) => {
       dynamicTyping: true,
       skipEmptyLines: true,
       delimitersToGuess: [',', '\t', '|', ';'],
+      transformHeader: (header) => header.trim(),
+      transform: (value) => {
+        if (typeof value === 'string') {
+          value = value.trim();
+          // Handle empty strings and NaN values
+          if (value === '' || value === 'NaN' || value === 'nan') {
+            return null;
+          }
+        }
+        return value;
+      },
       ...options
     };
     

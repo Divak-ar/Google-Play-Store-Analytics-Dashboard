@@ -166,9 +166,9 @@ export const filterApps = (apps, filters = {}) => {
     );
   }
   
-  if (filters.minRating) {
+  if (filters.minRating && typeof filters.minRating === 'number') {
     filteredApps = filteredApps.filter(app => 
-      app.rating >= filters.minRating
+      app.rating && app.rating >= filters.minRating
     );
   }
   

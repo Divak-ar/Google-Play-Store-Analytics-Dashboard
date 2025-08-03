@@ -168,23 +168,6 @@ function App() {
           stats={headerStats}
         />
 
-        {/* Mobile Menu Button */}
-        <div className="lg:hidden bg-white border-b border-gray-200 px-4 py-3">
-          <button
-            onClick={handleMobileSidebarToggle}
-            className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
-          >
-            {isMobileSidebarOpen ? (
-              <X className="w-5 h-5" />
-            ) : (
-              <Menu className="w-5 h-5" />
-            )}
-            <span className="text-sm font-medium">
-              {isMobileSidebarOpen ? 'Close' : 'Menu'}
-            </span>
-          </button>
-        </div>
-
         {/* Dashboard Content */}
         <main className="flex-1 overflow-hidden">
           <div className="h-full overflow-y-auto">
